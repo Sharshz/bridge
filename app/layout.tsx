@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { Providers } from '@/components/providers';
 
 export async function generateMetadata(): Promise<Metadata> {
   const appUrl = process.env.APP_URL || 'https://base-crossing.vercel.app';
@@ -10,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
     other: {
       'fc:miniapp': JSON.stringify({
         version: 'next',
-        imageUrl: `${appUrl}/og-image.png`, // Placeholder for OG image
+        imageUrl: `${appUrl}/og-image.png`,
         button: {
           title: 'Bridge Now',
           action: {
@@ -29,7 +30,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning className="bg-[#0A0A0C]">{children}</body>
+      <body suppressHydrationWarning className="bg-[#0A0A0C]">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

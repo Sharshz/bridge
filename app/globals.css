@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "tw-animate-css";
 
 @theme {
   --color-brand-base: #0052FF;
@@ -9,7 +8,7 @@
 
 @layer base {
   body {
-    @apply bg-[#0A0A0C] text-[#E5E7EB] font-sans antialiased overflow-hidden h-screen w-screen;
+    @apply bg-[#0A0A0C] text-[#E5E7EB] antialiased overflow-hidden h-screen w-screen;
     font-family: 'Inter', -apple-system, sans-serif;
   }
 }
