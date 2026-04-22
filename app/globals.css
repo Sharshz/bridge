@@ -1,1 +1,39 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --color-brand-base: #0052FF;
+  --color-brand-sol: #14F195;
+  --color-glass: rgba(23, 23, 26, 0.7);
+}
+
+@layer base {
+  body {
+    @apply bg-[#0A0A0C] text-[#E5E7EB] font-sans antialiased overflow-hidden h-screen w-screen;
+    font-family: 'Inter', -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-[rgba(23,23,26,0.7)] backdrop-blur-[12px];
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .font-mono-custom {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+  }
+
+  .gradient-base {
+    background: linear-gradient(135deg, #0052FF 0%, #0037AA 100%);
+  }
+
+  .gradient-sol {
+    background: linear-gradient(135deg, #14F195 0%, #9945FF 100%);
+  }
+
+  .card-active {
+    border: 1px solid rgba(0, 82, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 82, 255, 0.1);
+  }
+}

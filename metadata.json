@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "Base Crossing",
+  "description": "Seamlessly bridge assets between Base and Solana with ZK-security and high performance.",
   "requestFramePermissions": [],
   "majorCapabilities": []
 }
