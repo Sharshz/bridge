@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { sdk } from '@farcaster/miniapp-sdk';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowDown, Check, Info, Shield, Zap, RefreshCw, BarChart3, Activity, Wallet } from 'lucide-react';
+import { ArrowDown, Check, Info, Shield, Zap, RefreshCw, BarChart3, Activity, Wallet, Fuel } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -64,7 +64,7 @@ export default function BridgePage() {
             BC
           </div>
           <span className="font-semibold text-sm tracking-tight text-white">
-            BASE CROSSING <span className="text-white/20 ml-1">v1.3.0</span>
+            BASE CROSSING <span className="text-white/20 ml-1">v1.4.0</span>
           </span>
         </div>
         
@@ -235,13 +235,25 @@ export default function BridgePage() {
 
             {/* QUOTE DETAILS */}
             <div className="mt-8 pt-6 border-t border-white/5 space-y-3">
-              <div className="flex justify-between text-[11px] font-medium">
-                <span className="text-white/30 flex items-center gap-1.5 uppercase tracking-widest"><RefreshCw className="w-3 h-3" /> Slippage</span>
-                <span className="font-mono-custom text-white/80">0.5%</span>
+              <div className="flex justify-between items-center text-[10px] font-bold tracking-widest">
+                <div className="flex items-center gap-2">
+                   <Fuel className="w-3 h-3 text-white/30" />
+                   <span className="text-white/30 uppercase">Fee Breakdown</span>
+                </div>
               </div>
-              <div className="flex justify-between text-[11px] font-medium">
-                <span className="text-white/30 flex items-center gap-1.5 uppercase tracking-widest"><Shield className="w-3 h-3" /> Security</span>
-                <span className="text-blue-400 uppercase font-black text-[9px] tracking-[0.2em]">Double Validation</span>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex justify-between items-center text-[11px] font-medium p-2 rounded bg-white/5 border border-white/5">
+                  <span className="text-white/30 uppercase tracking-widest text-[9px]">Base Gas</span>
+                  <span className="font-mono-custom text-green-400 font-bold">$0.12</span>
+                </div>
+                <div className="flex justify-between items-center text-[11px] font-medium p-2 rounded bg-white/5 border border-white/5">
+                  <span className="text-white/30 uppercase tracking-widest text-[9px]">Solana Fee</span>
+                  <span className="font-mono-custom text-purple-400 font-bold">$0.01</span>
+                </div>
+              </div>
+              <div className="flex justify-between items-center text-[11px] font-medium px-1">
+                <span className="text-white/30 uppercase tracking-widest text-[9px]">Platform Fee (0.1%)</span>
+                <span className="font-mono-custom text-white/80">$2.14</span>
               </div>
             </div>
 
@@ -294,7 +306,7 @@ export default function BridgePage() {
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 99px; }
         
-        /* Provider Overrides for High Density design */
+        /* Provider Overrides */
         .wallet-adapter-button {
           height: auto !important;
           padding: 0 !important;

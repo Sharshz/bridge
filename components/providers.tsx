@@ -11,7 +11,6 @@ import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adap
 import { clusterApiUrl } from '@solana/web3.js';
 import { ReactNode, useMemo } from 'react';
 
-// Wagmi Config
 const wagmiConfig = createConfig({
   chains: [base],
   connectors: [
@@ -28,7 +27,6 @@ const wagmiConfig = createConfig({
 const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: ReactNode }) {
-  // Solana config
   const endpoint = useMemo(() => clusterApiUrl('mainnet-beta'), []);
   const wallets = useMemo(
     () => [
