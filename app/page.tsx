@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { sdk } from '@farcaster/miniapp-sdk';
 import { motion, AnimatePresence } from 'motion/react';
-import { ArrowDown, Check, Info, Shield, Zap, RefreshCw, BarChart3, Activity, Wallet, Fuel } from 'lucide-react';
+import { ArrowDown, Check, Info, Shield, Zap, RefreshCw, BarChart3, Activity, Wallet, Fuel, ChevronDown, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { useWallet } from '@solana/wallet-adapter-react';
@@ -12,11 +12,38 @@ import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 // Custom style for Solana wallet adapter
 import '@solana/wallet-adapter-react-ui/styles.css';
 
+// Token definitions
+interface Token {
+  id: string;
+  symbol: string;
+  name: string;
+  icon: string;
+  chain: 'base' | 'solana';
+}
+
+const BASE_TOKENS: Token[] = [
+  { id: 'eth', symbol: 'ETH', name: 'Ethereum', icon: 'BASE', chain: 'base' },
+  { id: 'usdc', symbol: 'USDC', name: 'USDC', icon: 'USDC', chain: 'base' },
+  { id: 'degen', symbol: 'DEGEN', name: 'Degen', icon: 'DEGN', chain: 'base' },
+  { id: 'cbbtc', symbol: 'cbBTC', name: 'Coinbase BTC', icon: 'BTC', chain: 'base' },
+];
+
+const SOLANA_TOKENS: Token[] = [
+  { id: 'sol', symbol: 'SOL', name: 'Solana', icon: 'SOL', chain: 'solana' },
+  { id: 'usdc', symbol: 'USDC', name: 'USDC', icon: 'USDC', chain: 'solana' },
+  { id: 'weth', symbol: 'wETH', name: 'Wrapped ETH', icon: 'WETH', chain: 'solana' },
+  { id: 'bonk', symbol: 'BONK', name: 'Bonk', icon: 'BONK', chain: 'solana' },
+];
+
 export default function BridgePage() {
   const [isReady, setIsReady] = useState(false);
   const [amount, setAmount] = useState('1.25');
   const [isBridging, setIsBridging] = useState(false);
   const [step, setStep] = useState(0);
+
+  const [fromToken, setFromToken] = useState<Token>(BASE_TOKENS[0]);
+  const [toToken, setToToken] = useState<Token>(SOLANA_TOKENS[0]);
+  const [showTokenModal, setShowTokenModal] = useState<'from' | 'to' | null>(null);
 
   // EVM Hooks
   const { address: evmAddress, isConnected: isEvmConnected } = useAccount();
@@ -182,15 +209,23 @@ export default function BridgePage() {
                   <span>{isEvmConnected ? 'Active Connection' : 'Disconnect'}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setShowTokenModal('from')}
+                    className="flex items-center gap-3 group hover:opacity-80 transition-opacity"
+                  >
                     <div className="w-10 h-10 rounded-full gradient-base p-0.5 shadow-lg shadow-blue-500/20">
-                      <div className="w-full h-full rounded-full bg-[#0A0A0C] flex items-center justify-center font-bold text-[9px] text-white">BASE</div>
+                      <div className="w-full h-full rounded-full bg-[#0A0A0C] flex items-center justify-center font-bold text-[9px] text-white">
+                        {fromToken.icon}
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-lg font-bold block leading-none mb-1 text-white">Ethereum</span>
+                    <div className="text-left">
+                      <div className="flex items-center gap-1.5 leading-none mb-1">
+                        <span className="text-lg font-bold text-white">{fromToken.symbol}</span>
+                        <ChevronDown className="w-4 h-4 text-white/20 group-hover:text-blue-400 transition-colors" />
+                      </div>
                       <span className="text-[10px] text-white/40 font-mono-custom uppercase tracking-tighter">Base Mainnet</span>
                     </div>
-                  </div>
+                  </button>
                   <input 
                     type="text" 
                     value={amount}
@@ -214,15 +249,23 @@ export default function BridgePage() {
                   <span>{isSolanaConnected ? 'Active Connection' : 'Wallet Required'}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setShowTokenModal('to')}
+                    className="flex items-center gap-3 group hover:opacity-80 transition-opacity"
+                  >
                     <div className="w-10 h-10 rounded-full gradient-sol p-0.5 shadow-lg shadow-purple-500/20">
-                      <div className="w-full h-full rounded-full bg-[#0A0A0C] flex items-center justify-center font-bold text-[9px] text-white">SOL</div>
+                      <div className="w-full h-full rounded-full bg-[#0A0A0C] flex items-center justify-center font-bold text-[9px] text-white">
+                        {toToken.icon}
+                      </div>
                     </div>
-                    <div>
-                      <span className="text-lg font-bold block leading-none mb-1 text-white">wEthereum</span>
+                    <div className="text-left">
+                      <div className="flex items-center gap-1.5 leading-none mb-1">
+                        <span className="text-lg font-bold text-white">{toToken.symbol}</span>
+                        <ChevronDown className="w-4 h-4 text-white/20 group-hover:text-purple-400 transition-colors" />
+                      </div>
                       <span className="text-[10px] text-white/40 font-mono-custom uppercase tracking-tighter">Solana Network</span>
                     </div>
-                  </div>
+                  </button>
                   <div className="text-right">
                     <div className="text-3xl font-bold font-mono-custom text-white/90">{(Number(amount) * 0.998).toFixed(4)}</div>
                     <div className="text-[10px] text-white/20 font-mono-custom uppercase tracking-widest mt-1">
@@ -300,6 +343,73 @@ export default function BridgePage() {
           </div>
         </section>
       </main>
+
+      {/* Token Modal */}
+      <AnimatePresence>
+        {showTokenModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowTokenModal(null)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="w-full max-w-sm glass rounded-2xl overflow-hidden border-white/10 shadow-2xl relative z-10"
+            >
+              <div className="p-4 border-b border-white/5 flex items-center justify-between">
+                <h3 className="text-sm font-bold uppercase tracking-widest text-white/80">Select Token</h3>
+                <button onClick={() => setShowTokenModal(null)} className="text-white/20 hover:text-white/40">×</button>
+              </div>
+              <div className="p-4">
+                <div className="relative mb-4">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <input 
+                    type="text" 
+                    placeholder="Search by name or address" 
+                    className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-sm focus:outline-none focus:border-blue-500/50 transition-colors"
+                  />
+                </div>
+                <div className="space-y-1 max-h-[300px] overflow-y-auto custom-scrollbar">
+                  {(showTokenModal === 'from' ? BASE_TOKENS : SOLANA_TOKENS).map((token) => (
+                    <button
+                      key={token.id}
+                      onClick={() => {
+                        if (showTokenModal === 'from') setFromToken(token);
+                        else setToToken(token);
+                        setShowTokenModal(null);
+                      }}
+                      className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 group transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={cn(
+                          "w-10 h-10 rounded-full p-0.5",
+                          token.chain === 'base' ? "gradient-base" : "gradient-sol"
+                        )}>
+                          <div className="w-full h-full rounded-full bg-[#0B0B0D] flex items-center justify-center font-bold text-[9px] text-white">
+                            {token.icon}
+                          </div>
+                        </div>
+                        <div className="text-left">
+                          <div className="font-bold text-white group-hover:text-white/100">{token.symbol}</div>
+                          <div className="text-[10px] text-white/30 uppercase font-mono-custom">{token.name}</div>
+                        </div>
+                      </div>
+                      {(showTokenModal === 'from' ? fromToken.id === token.id : toToken.id === token.id) && (
+                        <Check className="w-4 h-4 text-blue-500" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar { width: 2px; }
